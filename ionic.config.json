@@ -1,0 +1,8 @@
+{
+  "name": "runstep",
+  "app_id": "bca51bb3",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}
