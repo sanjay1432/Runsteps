@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 /**
@@ -13,16 +13,26 @@ import { Geolocation } from '@ionic-native/geolocation';
   selector: 'page-run',
   templateUrl: 'run.html',
 })
-export class RunPage {
-lat:any;
-long:any;
+export class RunPage implements OnInit {
+lat:any= 0;
+long:any = 0;
+distance:any;
   constructor(public navCtrl: NavController, public navParams: NavParams, private geolocation: Geolocation) {
-    setInterval(this.getLatLong(), 1000);
   }
+
+  ngOnInit() {
+    let self = this
+    setInterval(function () {
+      self.getLatLong();
+    }, 500);
+  }
+
   getLatLong() { 
     this.geolocation.getCurrentPosition().then((resp) => {
       // resp.coords.latitude
       // resp.coords.longitude
+       this.distance = this.getDistance({lat:resp.coords.latitude,lng:resp.coords.longitude},{lat:this.lat,lng:this.long})
+       console.log(this.distance)
       this.lat = resp.coords.latitude;
       this.long = resp.coords.longitude;
 
@@ -30,6 +40,22 @@ long:any;
        console.log('Error getting location', error);
      });
   }
+
+  rad = (x) => {
+    return x * Math.PI / 180;
+  };
+  
+  getDistance = (p1, p2) => {
+    let R = 6378137; // Earth’s mean radius in meter
+    let dLat = this.rad(p2.lat - p1.lat);
+    let dLong = this.rad(p2.lng - p1.lng);
+    let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.rad(p1.lat)) * Math.cos(this.rad(p2.lat)) *
+      Math.sin(dLong / 2) * Math.sin(dLong / 2);
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    let d = R * c;
+    return d; // returns the distance in meter
+  };
   ionViewDidLoad() {
     console.log('ionViewDidLoad RunPage');
   }
