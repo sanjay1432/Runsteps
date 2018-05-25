@@ -17,6 +17,9 @@ export class RunPage {
 lat:any;
 long:any;
   constructor(public navCtrl: NavController, public navParams: NavParams, private geolocation: Geolocation) {
+    setInterval(this.getLatLong(), 1000);
+  }
+  getLatLong() { 
     this.geolocation.getCurrentPosition().then((resp) => {
       // resp.coords.latitude
       // resp.coords.longitude
@@ -27,7 +30,6 @@ long:any;
        console.log('Error getting location', error);
      });
   }
-
   ionViewDidLoad() {
     console.log('ionViewDidLoad RunPage');
   }
