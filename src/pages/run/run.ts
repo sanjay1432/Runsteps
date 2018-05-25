@@ -14,9 +14,9 @@ import { Geolocation } from '@ionic-native/geolocation';
   templateUrl: 'run.html',
 })
 export class RunPage implements OnInit {
-lat:any= 0;
-long:any = 0;
-distance:any;
+lat:any;
+long:any;
+distance:number = 0;
   constructor(public navCtrl: NavController, public navParams: NavParams, private geolocation: Geolocation) {
   }
 
@@ -29,10 +29,9 @@ distance:any;
 
   getLatLong() { 
     this.geolocation.getCurrentPosition().then((resp) => {
-      // resp.coords.latitude
-      // resp.coords.longitude
-       this.distance = this.getDistance({lat:resp.coords.latitude,lng:resp.coords.longitude},{lat:this.lat,lng:this.long})
-       console.log(this.distance)
+      if(this.lat != undefined && this.long != undefined ){
+       this.distance += this.getDistance({lat:resp.coords.latitude,lng:resp.coords.longitude},{lat:this.lat,lng:this.long})
+      }
       this.lat = resp.coords.latitude;
       this.long = resp.coords.longitude;
 
@@ -46,7 +45,7 @@ distance:any;
   };
   
   getDistance = (p1, p2) => {
-    let R = 6378137; // Earth’s mean radius in meter
+    let R = 6371000; // Earth’s mean radius in meter
     let dLat = this.rad(p2.lat - p1.lat);
     let dLong = this.rad(p2.lng - p1.lng);
     let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
