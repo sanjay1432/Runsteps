@@ -1,6 +1,7 @@
 import { Component, OnInit} from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
+import { Stepcounter } from '@ionic-native/stepcounter';
 /**
  * Generated class for the RunPage page.
  *
@@ -17,27 +18,36 @@ export class RunPage implements OnInit {
 lat:any;
 long:any;
 distance:number = 0;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private geolocation: Geolocation) {
+  constructor(private stepcounter: Stepcounter, public navCtrl: NavController, public navParams: NavParams, private geolocation: Geolocation) {
+  
   }
 
   ngOnInit() {
     let self = this
     setInterval(function () {
       self.getLatLong();
-    }, 500);
+    }, 1000);
+   
+
   }
 
   getLatLong() { 
     this.geolocation.getCurrentPosition().then((resp) => {
       if(this.lat != undefined && this.long != undefined ){
-       this.distance += this.getDistance({lat:resp.coords.latitude,lng:resp.coords.longitude},{lat:this.lat,lng:this.long})
+       let calDis = this.getDistance({lat:resp.coords.latitude,lng:resp.coords.longitude},{lat:this.lat,lng:this.long})
+        console.log(calDis)
+       this.distance += calDis;
       }
       this.lat = resp.coords.latitude;
       this.long = resp.coords.longitude;
 
      }).catch((error) => {
        console.log('Error getting location', error);
-     });
+    });
+    let startingOffset = 0;
+this.stepcounter.start(startingOffset).then(onSuccess => console.log('stepcounter-start success', onSuccess), onFailure => console.log('stepcounter-start error', onFailure));
+
+this.stepcounter.getHistory().then(historyObj => console.log('stepcounter-history success', historyObj), onFailure => console.log('stepcounter-history error', onFailure));
   }
 
   rad = (x) => {

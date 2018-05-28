@@ -84,4 +84,6 @@
     <plugin name="cordova-plugin-geolocation" spec="^4.0.1">
         <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To locate you" />
     </plugin>
+    <plugin name="cordova-plugin-pedometer" spec="^0.4.1" />
+    <plugin name="cordova-plugin-stepcounter" spec="^1.0.1" />
 </widget>
